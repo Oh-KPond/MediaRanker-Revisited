@@ -5,15 +5,35 @@ describe WorksController do
     it "succeeds with all media types" do
       # Precondition: there is at least one media of each category
 
+      # given
+        # fixtures
+      # when
+      get root_path
+      # then
+      must_respond_with :success
+
     end
 
     it "succeeds with one media type absent" do
       # Precondition: there is at least one media in two of the categories
+      # given
+      # finds movie in fixtures and deletes it
+      movie = Work.find(works(:movie).id)
+      movie.delete
+      # when
+      get root_path
+      # then
+      must_respond_with :success
 
     end
 
     it "succeeds with no media" do
+      works = Work.all
+      works.destroy_all
 
+      get root_path
+
+      must_respond_with :success
     end
   end
 
