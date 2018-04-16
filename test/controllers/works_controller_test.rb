@@ -61,12 +61,20 @@ describe WorksController do
   describe "new" do
     it "succeeds" do
 
+      get new_work_path
+
+      must_respond_with :success
     end
   end
 
   describe "create" do
     it "creates a work with valid data for a real category" do
-
+      # proc   {
+      #   post works_path, params: { post: {title: "Some post", body: "la la la"}  }
+      # }.must_change 'Post.count', 1
+      #
+      # must_respond_with :redirect
+      # must_redirect_to post_index_path
     end
 
     it "renders bad_request and does not update the DB for bogus data" do
