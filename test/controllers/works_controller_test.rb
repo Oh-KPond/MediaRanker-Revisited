@@ -123,15 +123,30 @@ describe WorksController do
 
   describe "update" do
     it "succeeds for valid data and an extant work ID" do
+      put work_path(works(:movie).id), params: {
+        work: {title: "New Title"}
+      }
 
+      edited = Work.find(works(:movie).id)
+
+      edited.title.must_equal "New Title"
+
+      must_respond_with :redirect
+      must_redirect_to work_path(edited.id)
     end
 
     it "renders bad_request for bogus data" do
+      put work_path(works(:movie).id), params: {
+        work: {category: INVALID_CATEGORIES.first}
+      }
 
+      must_respond_with :bad_request
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      put work_path 999
 
+      must_respond_with :missing
     end
   end
 
