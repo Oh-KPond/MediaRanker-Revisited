@@ -109,11 +109,15 @@ describe WorksController do
 
   describe "edit" do
     it "succeeds for an extant work ID" do
+      get edit_work_path(works(:album).id)
 
+      must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      put work_path 999
 
+      must_respond_with :missing
     end
   end
 
