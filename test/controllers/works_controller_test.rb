@@ -69,16 +69,22 @@ describe WorksController do
 
   describe "create" do
     it "creates a work with valid data for a real category" do
-      # proc   {
-      #   post works_path, params: { post: {title: "Some post", body: "la la la"}  }
-      # }.must_change 'Post.count', 1
-      #
-      # must_respond_with :redirect
-      # must_redirect_to post_index_path
+      proc   {
+        post works_path, params: { work: {title: "Some new work", category: "movies"} }
+      }.must_change 'Work.count', 1
+
+      work = Work.find_by(title: "Some new work")
+
+      must_respond_with :redirect
+      must_redirect_to work_path(work.id)
     end
 
     it "renders bad_request and does not update the DB for bogus data" do
+      proc   {
+        post works_path, params: { work: {title: "Some new work", category: INVALID_CATEGORIES.first } }
+      }.must_change 'Work.count', 0
 
+      must_respond_with :bad_request
     end
 
     it "renders 400 bad_request for bogus categories" do
@@ -89,11 +95,15 @@ describe WorksController do
 
   describe "show" do
     it "succeeds for an extant work ID" do
+      get work_path works(:movie).id
 
+      must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      get work_path 999
 
+      must_respond_with :missing
     end
   end
 
