@@ -88,7 +88,7 @@ describe WorksController do
     end
 
     it "renders 400 bad_request for bogus categories" do
-
+# TODO: Create a test here or delete per Dee
     end
 
   end
@@ -153,17 +153,28 @@ describe WorksController do
   describe "destroy" do
     it "succeeds for an extant work ID" do
 
+      proc {delete work_path(works(:album).id) }.must_change 'Work.count', -1
+
+      must_respond_with :redirect
+      must_redirect_to root_path
     end
 
     it "renders 404 not_found and does not update the DB for a bogus work ID" do
+      proc {delete work_path(999) }.must_change 'Work.count', 0
 
+      must_respond_with :missing
     end
   end
 
   describe "upvote" do
 
     it "redirects to the work page if no user is logged in" do
+      work = Work.find(works(:movie).id)
 
+      post upvote_path work
+
+      must_respond_with :redirect
+      must_redirect_to work_path(work)
     end
 
     it "redirects to the work page after the user has logged out" do
@@ -177,5 +188,9 @@ describe WorksController do
     it "redirects to the work page if the user has already voted for that work" do
 
     end
+  end
+
+  def perform_login
+    post login_path, params: {user: "kari"}
   end
 end
