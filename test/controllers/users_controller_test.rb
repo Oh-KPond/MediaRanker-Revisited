@@ -14,7 +14,7 @@ describe UsersController do
       votes = Vote.all
       votes.destroy_all
       users.destroy_all
-      
+
       get users_path
 
       must_respond_with :success
@@ -32,6 +32,33 @@ describe UsersController do
       get user_path 999
 
       must_respond_with :missing
+    end
+  end
+
+  describe "github_login" do
+    it "logs in an existing user and redirects to the root route" do
+      # Given
+      start_count = User.count
+      user = users(:dan)
+
+      # When
+      login(user)
+
+      # Then
+      must_redirect_to root_path
+      session[:user_id].must_equal user.id
+      User.count.must_equal start_count
+    end
+
+    it "creates an account for a new user and redirects to the root route" do
+      # Given
+      start_count = User.count
+      user = User.new(provider: "github", uid: 99999, username: "test_user", email: "test@user.com")
+      # When
+      login(user)
+      # Then
+      must_redirect_to root_path
+      User.count.must_equal start_count + 1
     end
   end
 end
