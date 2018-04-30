@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_login, except: [:root]
+  before_action :require_login
 
   def index
     @users = User.all
@@ -7,6 +7,10 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find_by(id: params[:id])
-    render_404 unless @user
+
+    if @user == nil
+      render_404
+    end
+    render_404 unless @user.id == session[:user_id]
   end
 end

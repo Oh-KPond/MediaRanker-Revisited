@@ -1,18 +1,17 @@
 class SessionsController < ApplicationController
-  skip_before_action :require_login, only: [:login]
+  before_action :require_login, only: [:logout]
 
   def login
     auth_hash = request.env['omniauth.auth']
-
     if auth_hash[:uid]
       @user = User.find_by(uid: auth_hash[:uid], provider: 'github')
       if @user.nil?
         @user = User.build_from_github(auth_hash)
-      else
-        session[:user_id] = @user.id
-        flash[:success] = "Logged in successfully"
-        redirect_to root_path
+        @user.save
       end
+      session[:user_id] = @user.id
+      flash[:success] = "Logged in successfully"
+      redirect_to root_path
     else
       flash[:error] = "Could not log in"
       redirect_to root_path
