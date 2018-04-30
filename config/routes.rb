@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   root 'works#root'
 
   get "/auth/:provider/callback", to: "sessions#login", as: 'login'
-  get "/auth/github", as: "github_login" # for just github as provider
   post '/logout', to: 'sessions#logout', as: 'logout'
 
   resources :works
